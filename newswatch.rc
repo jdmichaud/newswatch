@@ -1,0 +1,6 @@
+#newswatcher configuration file
+feeds="G:/Projects/newswatch/feeds.txt"
+article_database="G:/Projects/newswatch/db.dat"
+analyzis_database="G:/Projects/newswatch/analyzed_db.bat"
+watch_cycle="900"
+cookies_file="C:/Documents and Settings/JeDi.GEORGE.000/Application Data/Mozilla/Firefox/Profiles/default.i42/cookies.txt"
