@@ -1,5 +1,5 @@
 #pragma once
-#pragma managed(push,off)
+//#pragma managed(push,off)
 #include <iostream>
 #include <string>
 #include <boost/thread/thread.hpp>
@@ -19,7 +19,7 @@
 # define LOG_LEVEL 1 // Max log level for release
 #endif // !_DEBUG
 
-#pragma managed(pop)
+//#pragma managed(pop)
 
 namespace newswatcher {
 
@@ -48,6 +48,20 @@ namespace newswatcher {
 			//
 			//TODO: Add the constructor code here
 			//
+
+			runcom_parser rc_parser("./newswatch.rc");
+			rc_parser.parse();
+			rc_parser.parse_feeds(rc_parser.get_config()->m_feed_filename);
+			rc_parser.parse_cookies(rc_parser.get_config()->m_cookies_filename);
+			configuration::get_instance()->print(std::cout);
+
+			// Initialiaze database
+			db_access::get_instance()->init();
+
+			//Launch feed watcher
+			//feed_watcher fw;
+			//boost::thread feed_watcher_thread(boost::bind(&(feed_watcher::watch), &fw));
+			//feed_watcher_thread.join();
 		}
 
 	protected:

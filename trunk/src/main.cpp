@@ -86,6 +86,8 @@ int main(int argc, char *argv[])
 
     // Initialiaze database
     db_access::get_instance()->init();
+	BOOST_LOG(1, "Number of newspapers in database: " << db_access::get_instance()->get_number_of_newspapers());
+	BOOST_LOG(1, "Number of articles in database: " << db_access::get_instance()->get_number_of_articles());
 
     //db_access::get_instance()->dump_all_articles("G:\\Projects\\newswatch");
     //exit(0);

@@ -133,8 +133,8 @@ public:
   std::map<std::string, std::string>  m_unknown_config;
 };
 
-//#ifndef ___CLR___
+#ifndef ___CLR___
 static boost::program_options::variables_map vm;
-//#endif
+#endif
 
 #endif // !_GLOBALS_H_

@@ -69,8 +69,7 @@ int db_access::create_database()
                                             Source          varchar,  \
                                             FeedName        varchar,  \
                                             FeedAddress     varchar,  \
-                                            Content         text,     \
-                                            PRIMARY KEY(Title));", NULL, NULL, NULL);
+                                            Content         text);", NULL, NULL, NULL);
 
   return 0;
 }
@@ -86,7 +85,7 @@ int db_access::dump_all_articles(const std::string &path)
   if (SQLITE_OK != execute(query.str(), generic_callback, &newspaper_names, NULL))
   {
     std::cerr << get_last_error() << std::endl;
-    BOOST_LOG(1, "db_newspaper::insert: query failed: " << get_last_error());
+    BOOST_LOG(1, "db_newspaper::dump_all_articles: query failed: " << get_last_error());
     return -1;      
   }
 
@@ -111,7 +110,7 @@ int db_access::dump_all_articles(const std::string &path)
     if (SQLITE_OK != execute(articles_query.str(), generic_callback, &articles, NULL))
     {
       std::cerr << get_last_error() << std::endl;
-      BOOST_LOG(1, "db_newspaper::insert: query failed: " << get_last_error());
+      BOOST_LOG(1, "db_newspaper::dump_all_articles: query failed: " << get_last_error());
       return -1;      
     }
 
@@ -139,4 +138,44 @@ std::string db_access::prepare_string_for_filename(const std::string &str, const
       ret.replace(i, 1, "_");
 
   return ret;
+}
+
+unsigned int db_access::get_number_of_newspapers()
+{
+  std::ostringstream query;
+
+  query << "SELECT Count(Name) FROM Newspaper;";
+  BOOST_LOG(1, "db_access::get_number_of_newspapers: query -->");
+  BOOST_LOG(1,query.str());
+  query_result_t newspapers_count;
+  if (SQLITE_OK != execute(query.str(), generic_callback, &newspapers_count, NULL))
+  {
+    std::cerr << get_last_error() << std::endl;
+    BOOST_LOG(1, "db_newspaper::get_number_of_newspapers: query failed: " << get_last_error());
+    return -1;      
+  }
+
+  std::string result = newspapers_count.begin()->second[0];
+  BOOST_LOG(1, "answer: " << result);
+  return atoi(result.c_str());
+}
+
+unsigned int db_access::get_number_of_articles()
+{
+  std::ostringstream query;
+
+  query << "SELECT Count(Title) FROM Article;";
+  BOOST_LOG(1, "db_access::get_number_of_articles: query -->");
+  BOOST_LOG(1,query.str());
+  query_result_t article_count;
+  if (SQLITE_OK != execute(query.str(), generic_callback, &article_count, NULL))
+  {
+    std::cerr << get_last_error() << std::endl;
+    BOOST_LOG(1, "db_newspaper::get_number_of_articles: query failed: " << get_last_error());
+    return -1;      
+  }
+
+  std::string result = article_count.begin()->second[0];
+  BOOST_LOG(1, "answer: " << result);
+  return atoi(result.c_str());
 }

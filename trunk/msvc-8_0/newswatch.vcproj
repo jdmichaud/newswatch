@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="newswatch"
 	ProjectGUID="{53CC2AF5-7357-4A11-80A0-3816C222A1AF}"
 	RootNamespace="newswatch"
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="G:\Program Files\boost-cvs\boost\"
+				AdditionalIncludeDirectories="D:\Program Files\boost-cvs\boost\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;TIXML_USE_STL;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;_WIN32_WINNT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="G:\Program Files\boost-cvs\boost\stage\lib"
+				AdditionalLibraryDirectories="D:\Program Files\boost-cvs\boost\stage\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
