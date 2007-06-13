@@ -88,6 +88,8 @@ public:
 
   int dump_all_articles(const std::string &path);
   std::string prepare_string_for_filename(const std::string &str, const std::string &char_to_delete);
+  unsigned int get_number_of_articles();
+  unsigned int get_number_of_newspapers();
 
 private:
   sqlite3             *m_database;

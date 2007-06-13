@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="newswatcher"
 	ProjectGUID="{45232591-845C-46F3-A2E4-F5662AE2E52B}"
 	RootNamespace="newswatcher"
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/TP"
 				Optimization="0"
-				AdditionalIncludeDirectories="G:\Projects\newswatch\src;&quot;G:\Program Files\boost-cvs\boost&quot;"
+				AdditionalIncludeDirectories="D:\viewstore\test\newswatch\src;&quot;D:\Program Files\boost-cvs\boost&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;TIXML_USE_STL;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_DEPRECATE;_WIN32_WINNT;___CLR___"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -62,11 +62,11 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="$(NoInherit)"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;G:\Program Files\boost-cvs\boost\stage\lib&quot;"
+				AdditionalLibraryDirectories="&quot;D:\Program Files\boost-cvs\boost\stage\lib&quot;"
 				GenerateDebugInformation="true"
 				AssemblyDebug="1"
-				SubSystem="2"
-				EntryPointSymbol="main"
+				SubSystem="0"
+				EntryPointSymbol=""
 				TargetMachine="1"
 			/>
 			<Tool
@@ -285,15 +285,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\sqlite3.c"
+				RelativePath="..\src\sqlite3.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\src\symbol.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\src\symbol.hpp"
 				>
 			</File>
 			<File
@@ -354,6 +350,10 @@
 			</File>
 			<File
 				RelativePath="..\src\symbol.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\symbol.hpp"
 				>
 			</File>
 			<File
