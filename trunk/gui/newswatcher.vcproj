@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ConfigurationWindow.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\newswatcher.cpp"
 				>
 			</File>
@@ -232,6 +236,16 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\ConfigurationWindow.h"
+				FileType="3"
+				>
+				<File
+					RelativePath=".\ConfigurationWindow.resx"
+					SubType="Designer"
+					>
+				</File>
+			</File>
 			<File
 				RelativePath=".\MainWindow.h"
 				FileType="3"

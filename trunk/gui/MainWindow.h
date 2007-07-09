@@ -4,6 +4,7 @@
 #include <string>
 #include <boost/thread/thread.hpp>
 #include <boost/bind.hpp>
+#include "ConfigurationWindow.h"
 #include "logging.hpp"
 #include "globals.h"
 #include "runcom_parser.hpp"
@@ -49,7 +50,7 @@ namespace newswatcher {
 			//TODO: Add the constructor code here
 			//
 
-			runcom_parser rc_parser("./newswatch.rc");
+			runcom_parser rc_parser("../newswatch.rc");
 			rc_parser.parse();
 			rc_parser.parse_feeds(rc_parser.get_config()->m_feed_filename);
 			rc_parser.parse_cookies(rc_parser.get_config()->m_cookies_filename);
@@ -107,13 +108,13 @@ namespace newswatcher {
       this->fileToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
       this->configurationToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
       this->exitToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-      this->mainStatusStrip = (gcnew System::Windows::Forms::StatusStrip());
-      this->mainStatusStripLabel = (gcnew System::Windows::Forms::ToolStripStatusLabel());
-      this->mainTreeView = (gcnew System::Windows::Forms::TreeView());
-      this->mainWebBrowser = (gcnew System::Windows::Forms::WebBrowser());
       this->helpToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
       this->aboutToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+      this->mainStatusStrip = (gcnew System::Windows::Forms::StatusStrip());
+      this->mainStatusStripLabel = (gcnew System::Windows::Forms::ToolStripStatusLabel());
       this->mainStripProgressBar = (gcnew System::Windows::Forms::ToolStripProgressBar());
+      this->mainTreeView = (gcnew System::Windows::Forms::TreeView());
+      this->mainWebBrowser = (gcnew System::Windows::Forms::WebBrowser());
       this->menuStrip1->SuspendLayout();
       this->mainStatusStrip->SuspendLayout();
       this->SuspendLayout();
@@ -139,15 +140,29 @@ namespace newswatcher {
       // configurationToolStripMenuItem
       // 
       this->configurationToolStripMenuItem->Name = L"configurationToolStripMenuItem";
-      this->configurationToolStripMenuItem->Size = System::Drawing::Size(162, 22);
+      this->configurationToolStripMenuItem->Size = System::Drawing::Size(152, 22);
       this->configurationToolStripMenuItem->Text = L"&Configuration...";
       this->configurationToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::configurationToolStripMenuItem_Click);
       // 
       // exitToolStripMenuItem
       // 
       this->exitToolStripMenuItem->Name = L"exitToolStripMenuItem";
-      this->exitToolStripMenuItem->Size = System::Drawing::Size(162, 22);
+      this->exitToolStripMenuItem->Size = System::Drawing::Size(152, 22);
       this->exitToolStripMenuItem->Text = L"&Exit";
+      this->exitToolStripMenuItem->Click += gcnew System::EventHandler(this, &MainWindow::exitToolStripMenuItem_Click);
+      // 
+      // helpToolStripMenuItem
+      // 
+      this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->aboutToolStripMenuItem});
+      this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
+      this->helpToolStripMenuItem->Size = System::Drawing::Size(40, 20);
+      this->helpToolStripMenuItem->Text = L"Help";
+      // 
+      // aboutToolStripMenuItem
+      // 
+      this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
+      this->aboutToolStripMenuItem->Size = System::Drawing::Size(103, 22);
+      this->aboutToolStripMenuItem->Text = L"&About";
       // 
       // mainStatusStrip
       // 
@@ -164,6 +179,13 @@ namespace newswatcher {
       this->mainStatusStripLabel->Name = L"mainStatusStripLabel";
       this->mainStatusStripLabel->Size = System::Drawing::Size(42, 17);
       this->mainStatusStripLabel->Text = L"Ready.";
+      // 
+      // mainStripProgressBar
+      // 
+      this->mainStripProgressBar->Alignment = System::Windows::Forms::ToolStripItemAlignment::Right;
+      this->mainStripProgressBar->Name = L"mainStripProgressBar";
+      this->mainStripProgressBar->Size = System::Drawing::Size(100, 16);
+      this->mainStripProgressBar->Visible = false;
       // 
       // mainTreeView
       // 
@@ -186,26 +208,6 @@ namespace newswatcher {
       this->mainWebBrowser->Size = System::Drawing::Size(616, 482);
       this->mainWebBrowser->TabIndex = 3;
       // 
-      // helpToolStripMenuItem
-      // 
-      this->helpToolStripMenuItem->DropDownItems->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(1) {this->aboutToolStripMenuItem});
-      this->helpToolStripMenuItem->Name = L"helpToolStripMenuItem";
-      this->helpToolStripMenuItem->Size = System::Drawing::Size(40, 20);
-      this->helpToolStripMenuItem->Text = L"Help";
-      // 
-      // aboutToolStripMenuItem
-      // 
-      this->aboutToolStripMenuItem->Name = L"aboutToolStripMenuItem";
-      this->aboutToolStripMenuItem->Size = System::Drawing::Size(152, 22);
-      this->aboutToolStripMenuItem->Text = L"&About";
-      // 
-      // mainStripProgressBar
-      // 
-      this->mainStripProgressBar->Alignment = System::Windows::Forms::ToolStripItemAlignment::Right;
-      this->mainStripProgressBar->Name = L"mainStripProgressBar";
-      this->mainStripProgressBar->Size = System::Drawing::Size(100, 16);
-      this->mainStripProgressBar->Visible = false;
-      // 
       // MainWindow
       // 
       this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -227,8 +229,16 @@ namespace newswatcher {
 
     }
 #pragma endregion
-  private: System::Void configurationToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+  private: System::Void configurationToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) 
+           {
+             ConfigurationWindow CW;
+             CW.Show();
+             
            }
-  };
+  private: System::Void exitToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) 
+           {
+             exit(0);
+           }
+};
 }
 
