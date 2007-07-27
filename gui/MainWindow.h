@@ -94,6 +94,7 @@ namespace newswatcher {
 	private:
 		/// <summary>
 		/// Required designer variable.
+    ConfigurationWindow m_configuration_window;
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
@@ -231,9 +232,8 @@ namespace newswatcher {
 #pragma endregion
   private: System::Void configurationToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) 
            {
-             ConfigurationWindow CW;
-             CW.Show();
-             
+             m_configuration_window.load_configuration();
+             m_configuration_window.Show();
            }
   private: System::Void exitToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) 
            {

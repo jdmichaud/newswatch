@@ -1,12 +1,13 @@
 #pragma once
 
+#include "globals.h"
+
 using namespace System;
 using namespace System::ComponentModel;
 using namespace System::Collections;
 using namespace System::Windows::Forms;
 using namespace System::Data;
 using namespace System::Drawing;
-
 
 namespace newswatcher {
 
@@ -29,6 +30,12 @@ namespace newswatcher {
 			//TODO: Add the constructor code here
 			//
 		}
+
+    void load_configuration()
+    {
+      char *toto = "toto";
+      textBoxFeedsFile->Text = System::Runtime::InteropServices::Marshal::PtrToStringAnsi((int) toto);
+    }
 
 	protected:
 		/// <summary>
@@ -397,8 +404,9 @@ namespace newswatcher {
 
     }
 #pragma endregion
-  private: System::Void labelWatch_Click(System::Object^  sender, System::EventArgs^  e) {
-           }
+private: System::Void labelWatch_Click(System::Object^  sender, System::EventArgs^  e) 
+         {
+         }
 private: System::Void ConfigurationWindow_Load(System::Object^  sender, System::EventArgs^  e) 
          {
          }
