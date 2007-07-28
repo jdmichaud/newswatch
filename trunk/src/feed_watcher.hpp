@@ -195,12 +195,17 @@ public:
   {
     while (1)
     {
-      get_feeds();
       boost::xtime xt;
       boost::xtime_get(&xt, boost::TIME_UTC);
       xt.sec += m_watch_time;
-      BOOST_LOG(2, "feed_watcher: Gonna sleep for " << m_watch_time << " seconds now");
-      boost::thread::sleep(xt); // Sleep for 1 second
+      get_feeds();
+      boost::xtime xt2;
+      boost::xtime_get(&xt2, boost::TIME_UTC);
+      if (xt.sec - xt2.sec > 0)
+      {
+        BOOST_LOG(2, "feed_watcher: Gonna sleep for " << xt.sec - xt2.sec << " seconds now");
+        boost::thread::sleep(xt); // Sleep
+      }
     }
   }
 
