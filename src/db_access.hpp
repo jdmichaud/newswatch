@@ -88,6 +88,8 @@ public:
 
   int dump_all_articles(const std::string &path);
   std::string prepare_string_for_filename(const std::string &str, const std::string &char_to_delete);
+  int get_articles(const std::string &newspaper_name, std::vector<unsigned long int> &uids);
+  int get_newspapers(std::vector<std::string> &newspapers_name);
   unsigned int get_number_of_articles();
   unsigned int get_number_of_newspapers();
 
@@ -371,6 +373,76 @@ public:
   boost::mutex	 m_callback_mutex;
   boost::mutex	 m_insert_mutex;
   
+};
+
+class db_marker : public db_object
+{
+public:
+  db_marker(const std::string &marker_name) : m_marker_name(marker_name) 
+  {
+    
+  }
+
+  int load()
+  {
+    std::string query;
+    query = "SELECT article_uid FROM m_marker_name;";
+
+    db_access::query_result_t result;
+    BOOST_LOG(1, "db_marker::load: loading marker table with query: " << query);
+    if (SQLITE_OK != db_access::get_instance()->execute(query, db_access::generic_callback, &result, NULL))
+    {
+      std::cerr << db_access::get_instance()->get_last_error() << std::endl;
+      BOOST_LOG(1, "db_article::insert: query failed: " << db_access::get_instance()->get_last_error());
+      return -1;      
+    }
+    
+    BOOST_LOG(1, "db_marker::load: found " << result["article_uid"].size() << " uids for marker " << m_marker_name);
+    unsigned int i = 0;
+    for ( ; i < result["article_uid"].size(); ++i)
+      m_article_uids.push_back(atoi(result["article_uid"][i].c_str()));
+
+    return 0;
+  }
+
+  int create()
+  {
+    std::string query;
+    query = "CREATE TABLE " + m_marker_name + " (integer article_uid);";
+    BOOST_LOG(1, "db_marker::create: Creating marker table with query: " << query);
+    if (SQLITE_OK != db_access::get_instance()->execute(query))
+    {
+      std::cerr << db_access::get_instance()->get_last_error() << std::endl;
+      BOOST_LOG(1, "db_marker::create: query failed: " << db_access::get_instance()->get_last_error());
+      return -1;      
+    }
+
+    return 0;
+  }
+
+  int add_giud(unsigned long int uid)
+  {
+    std::ostringstream query;
+    query << "INSERT INTO " << m_marker_name << " (article_uid) VALUES (" << uid << ");";
+    BOOST_LOG(1, "db_marker::add_giud: adding uid: " << uid << " to " << m_marker_name << " with query: " << query);
+    if (SQLITE_OK != db_access::get_instance()->execute(query.str()))
+    {
+      std::cerr << db_access::get_instance()->get_last_error() << std::endl;
+      BOOST_LOG(1, "db_marker::create: query failed: " << db_access::get_instance()->get_last_error());
+      return -1;      
+    }
+
+    return 0;
+  }
+
+  int delete_table()
+  {
+    return -1;
+  }
+
+private:
+  std::string                     m_marker_name;
+  std::vector<unsigned long int>  m_article_uids;
 };
 
 #endif // !_DB_ACCESS_H_
