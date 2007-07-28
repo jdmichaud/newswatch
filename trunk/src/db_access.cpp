@@ -140,6 +140,25 @@ std::string db_access::prepare_string_for_filename(const std::string &str, const
   return ret;
 }
 
+int db_access::get_newspapers(std::vector<std::string> &newspapers_name)
+{
+  std::ostringstream query;
+
+  query << "SELECT Name FROM Newspaper;";
+  BOOST_LOG(1, "db_access::get_newspapers: query -->");
+  BOOST_LOG(1, query.str());
+  query_result_t newspapers;
+  if (SQLITE_OK != execute(query.str(), generic_callback, &newspapers, NULL))
+  {
+    std::cerr << get_last_error() << std::endl;
+    BOOST_LOG(1, "db_newspaper::get_newspapers: query failed: " << get_last_error());
+    return -1;      
+  }
+
+  newspapers_name = newspapers["Name"];
+  return 0;
+}
+
 unsigned int db_access::get_number_of_newspapers()
 {
   std::ostringstream query;
@@ -158,6 +177,28 @@ unsigned int db_access::get_number_of_newspapers()
   std::string result = newspapers_count.begin()->second[0];
   BOOST_LOG(1, "answer: " << result);
   return atoi(result.c_str());
+}
+
+int db_access::get_articles(const std::string &newspaper_name, std::vector<unsigned long int> &uids)
+{
+  std::ostringstream query;
+
+  query << "SELECT uid FROM Article WHERE NewspaperName='" << newspaper_name << "';";
+  BOOST_LOG(1, "db_access::get_articles: query -->");
+  BOOST_LOG(1,query.str());
+  query_result_t article_uids;
+  if (SQLITE_OK != execute(query.str(), generic_callback, &article_uids, NULL))
+  {
+    std::cerr << get_last_error() << std::endl;
+    BOOST_LOG(1, "db_newspaper::get_number_of_articles: query failed: " << get_last_error());
+    return -1;      
+  }
+
+  unsigned int i = 0;
+  for (; i < article_uids["uid"].size(); ++i)
+    uids.push_back(atol(article_uids["uid"][i].c_str()));
+
+  return 0;
 }
 
 unsigned int db_access::get_number_of_articles()

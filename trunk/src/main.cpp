@@ -8,6 +8,7 @@
 #include "feed_watcher.hpp"
 #include "db_access.hpp"
 #include "text_extractor.hpp"
+#include "word_counter.hpp"
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
@@ -86,9 +87,24 @@ int main(int argc, char *argv[])
 
     // Initialiaze database
     db_access::get_instance()->init();
-	BOOST_LOG(1, "Number of newspapers in database: " << db_access::get_instance()->get_number_of_newspapers());
-	BOOST_LOG(1, "Number of articles in database: " << db_access::get_instance()->get_number_of_articles());
+	  //BOOST_LOG(1, "Number of newspapers in database: " << db_access::get_instance()->get_number_of_newspapers());
+	  //BOOST_LOG(1, "Number of articles in database: " << db_access::get_instance()->get_number_of_articles());
 
+    // Counter how many times we find 'Obama' in the articles downloaded
+    std::string democrats_tab[] = {"Joe Biden", "Hillary Clinton", "Christopher Dodd", "John Edwards", "Mike Gravel", "Dennis Kucinich", "Barack Obama", "Bill Richardson" };
+    const size_t size = sizeof democrats_tab / sizeof democrats_tab[0];
+    std::vector<std::string> democrats(democrats_tab, democrats_tab + size);
+
+    /*
+    unsigned int democrats_count = 0;
+    for ( ; democrats_count < democrats.size(); ++democrats_count)
+    {
+      word_counter wc(democrats[democrats_count]);
+	    BOOST_LOG(1, "Counting: " << democrats[democrats_count]);
+      unsigned int count = wc.count();
+	    BOOST_LOG(1, "found " << count << " occurences");
+    }
+    */
     //db_access::get_instance()->dump_all_articles("G:\\Projects\\newswatch");
     //exit(0);
 
@@ -99,6 +115,8 @@ int main(int argc, char *argv[])
     //Article catcher object. It will register to feed_watcher event and notify for new article in database.
     //article_catcher ca;
     //ca.register_callbacks(*(callback_handler::get_instance()));
+
+    
 
     //Launch feed watcher
     feed_watcher fw;
