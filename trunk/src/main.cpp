@@ -35,13 +35,25 @@ void usage(const po::options_description &desc)
 int main(int argc, char *argv[])
 {
   // Initializes logging
-  BOOST_LOG_INIT("[" >> boost::logging::level >> "]" 
-    >> boost::logging::filename >> "(" >> boost::logging::line >> ")," 
-    >> boost::logging::time >> "," >> boost::logging::trace >> boost::logging::eol, LOG_LEVEL);
+  LOGLITE_INIT("[" >> loglite::mask >> "]" 
+               >> loglite::filename >> "(" >> loglite::line >> ")," 
+               >> loglite::time >> "," >> loglite::trace >> loglite::eol);
   
-  BOOST_LOG_ADD_OUTPUT_STREAM(new std::ofstream("./log.txt", std::ios_base::app));
+
+  loglite::sink file(new std::ofstream("./newswatch.log", std::ios_base::app), LOGLITE_MASK_LEVEL_3);
+  file.attach_qualifier(loglite::log);
+  file.attach_qualifier(loglite::error);
+  file.attach_qualifier(loglite::warning);
+  LOGLITE_ADD_OUTPUT_STREAM(file);
+
+  loglite::sink error_screen(&std::cerr, LOGLITE_MASK_LEVEL_1);
+  error_screen.attach_qualifier(loglite::error);
+  LOGLITE_ADD_OUTPUT_STREAM(error_screen);
+
 #ifdef _DEBUG
-  BOOST_LOG_ADD_OUTPUT_STREAM(&std::cout);
+  loglite::sink screen(&std::cout, LOGLITE_MASK_LEVEL_2);
+  screen.attach_qualifier(loglite::log);
+  LOGLITE_ADD_OUTPUT_STREAM(screen);
 #endif // !_DEBUG
 
   try 
@@ -60,25 +72,25 @@ int main(int argc, char *argv[])
 
     if (vm.count("version"))
     {
-      BOOST_LOG(3, "Displaying version");
+      LOGLITE_LOG_(LOGLITE_LEVEL_4, "Displaying version: " << VERSION);
       std::cout << VERSION << std::endl;
       return 0;
     }
 
     if (vm.count("help"))
     {
-      BOOST_LOG(3, "Displaying help");
+      LOGLITE_LOG_(LOGLITE_LEVEL_4, "Displaying help");
       usage(desc);
       return 1;
     }
 
     if (vm.count("watch"))
     {
-      BOOST_LOG(1, "Watch mode set");
+      LOGLITE_LOG_(LOGLITE_LEVEL_1, "Watch mode set");
     }
 
     // Parsing configuration file
-    BOOST_LOG(1, "Using " << vm["config-file"].as<std::string>() << "as a config file");
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "Using " << vm["config-file"].as<std::string>() << "as a config file");
     runcom_parser rc_parser(vm["config-file"].as<std::string>());
     rc_parser.parse();
     rc_parser.parse_feeds(rc_parser.get_config()->m_feed_filename);
@@ -91,9 +103,9 @@ int main(int argc, char *argv[])
 	  //BOOST_LOG(1, "Number of articles in database: " << db_access::get_instance()->get_number_of_articles());
 
     // Counter how many times we find 'Obama' in the articles downloaded
-    std::string democrats_tab[] = {"Joe Biden", "Hillary Clinton", "Christopher Dodd", "John Edwards", "Mike Gravel", "Dennis Kucinich", "Barack Obama", "Bill Richardson" };
-    const size_t size = sizeof democrats_tab / sizeof democrats_tab[0];
-    std::vector<std::string> democrats(democrats_tab, democrats_tab + size);
+    //std::string democrats_tab[] = {"Joe Biden", "Hillary Clinton", "Christopher Dodd", "John Edwards", "Mike Gravel", "Dennis Kucinich", "Barack Obama", "Bill Richardson" };
+    //const size_t size = sizeof democrats_tab / sizeof democrats_tab[0];
+    //std::vector<std::string> democrats(democrats_tab, democrats_tab + size);
 
     /*
     unsigned int democrats_count = 0;
@@ -120,19 +132,18 @@ int main(int argc, char *argv[])
 
     //Launch feed watcher
     feed_watcher fw;
-    boost::thread feed_watcher_thread(boost::bind(&(feed_watcher::watch), &fw));
+    boost::thread feed_watcher_thread(boost::bind(&feed_watcher::watch, &fw));
     feed_watcher_thread.join();
   }
   catch(std::exception& e) 
   {
-    std::cerr << "error: " << e.what() << std::endl;
-    BOOST_LOG(1, "ERROR: " << e.what());
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "ERROR: " << e.what());
     return 1;
   }
 #ifndef _DEBUG
   catch(...) 
   {
-    std::cerr << "Exception of unknown type!" << std::endl;
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "ERROR: Exception of unknown type!");
   }
 #endif
 

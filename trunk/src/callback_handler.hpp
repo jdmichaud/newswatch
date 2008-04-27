@@ -58,7 +58,7 @@ public:
 
   void new_article(unsigned int uid)
   {
-    BOOST_LOG(1, "callback_handler::new_article called");
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "callback_handler::new_article called");
 
     std::vector<new_article_handler_t *>::iterator it = m_new_article_callbacks.begin();
     for (; it != m_new_article_callbacks.end(); ++it)
@@ -71,7 +71,7 @@ public:
 
   void new_newspaper(const std::string &newspaper_name)
   {
-    BOOST_LOG(1, "callback_handler::new_newspaper called");
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "callback_handler::new_newspaper called");
     
     std::vector<new_newspaper_handler_t *>::iterator it = m_new_newspaper_callbacks.begin();
     for (; it != m_new_newspaper_callbacks.end(); ++it)

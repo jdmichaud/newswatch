@@ -110,13 +110,13 @@ public:
       if (m_cookies[i].m_website == website && m_cookies[i].m_name == name)
       {
         found = true;
-        BOOST_LOG(2, "configuration::add_cookie: update cookie: website: " << website << " name " << name << " old value: " << m_cookies[i].m_value << " new value: " << value);
+        LOGLITE_LOG_(LOGLITE_LEVEL_2, "configuration::add_cookie: update cookie: website: " << website << " name " << name << " old value: " << m_cookies[i].m_value << " new value: " << value);
         m_cookies[i].m_value = value;
       }
 
     if (!found)
     {
-      BOOST_LOG(1, "configuration::add_cookie: new cookie: website: " << website << " name: " << name << " value: " << value);
+      LOGLITE_LOG_(LOGLITE_LEVEL_1, "configuration::add_cookie: new cookie: website: " << website << " name: " << name << " value: " << value);
       m_cookies.push_back(cookie_s(website, name, value));
     }
 

@@ -48,7 +48,7 @@ void asio_http_client::handle_resolve(const boost::system::error_code& err,
   else
   {
     std::cout << "Error: " << err << std::endl;
-    BOOST_LOG(1, "Error: " << err);
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "Error: " << err);
   }
 }
 
@@ -74,7 +74,7 @@ void asio_http_client::handle_connect(const boost::system::error_code& err,
   else
   {
     std::cout << "Error: " << err << std::endl;
-    BOOST_LOG(1, "Error: " << err);
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "Error: " << err);
   }
 }
 
@@ -89,8 +89,7 @@ void asio_http_client::handle_write_request(const boost::system::error_code& err
   }
   else
   {
-    std::cout << "Error: " << err << std::endl;
-    BOOST_LOG(1, "Error: " << err);
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Error: " << err);
   }
 }
 
@@ -108,27 +107,23 @@ void asio_http_client::handle_read_status_line(const boost::system::error_code &
     std::getline(m_responsestream, status_message);
     if (!m_responsestream || http_version.substr(0, 5) != "HTTP/")
     {
-      std::cout << "Invalid response" << std::endl;
-      BOOST_LOG(1, "Invalid response");
+      LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::warning, "Warning: Invalid response");
       return;
     }
     if (m_status_code != 200 && m_status_code != 302)
     {
-      std::cout << "ERROR: Response returned with status code ";
-      std::cout << m_status_code << std::endl;
-      BOOST_LOG(1, "ERROR: Response returned with status code: " << m_status_code);
+      LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "ERROR: Response returned with status code: " << m_status_code);
       return;
     }
 
     // Read the response headers, which are terminated by a blank line.
     boost::asio::async_read_until(m_socket, m_response, boost::regex("\r\n\r\n"),
-      boost::bind(&asio_http_client::handle_read_headers, this,
-      boost::asio::placeholders::error));
+                                  boost::bind(&asio_http_client::handle_read_headers, this,
+                                              boost::asio::placeholders::error));
   }
   else
   {
-    std::cout << "Error: " << err << std::endl;
-    BOOST_LOG(1, "Error: " << err);
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Error: " << err);
   }
 }
 
@@ -156,8 +151,7 @@ void asio_http_client::handle_read_headers(const boost::system::error_code& err)
   }
   else
   {
-    std::cout << "Error: " << err << std::endl;
-    BOOST_LOG(1, "Error: " << err);
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Error: " << err);
   }
 }
 
@@ -177,7 +171,7 @@ void asio_http_client::handle_read_content(const boost::system::error_code& err)
   else if (err != boost::asio::error::eof)
   {
     std::cout << "Error: " << err << std::endl;
-    BOOST_LOG(1, "Error: " << err);
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Error: " << err);
   }
 }
 
@@ -198,7 +192,7 @@ std::string asio_http_client::build_cookies_string(const std::string &server)
     }
   }
 
-  BOOST_LOG(2, "asio_http_client::build_cookies_string: " << str.str());
+  LOGLITE_LOG_(LOGLITE_LEVEL_2, "asio_http_client::build_cookies_string: " << str.str());
   return str.str();
 }
 
@@ -213,20 +207,21 @@ int asio_http_client::extract_cookie_from_header(const std::string &server)
     boost::iterator_range<std::string::iterator> range = boost::find_first(line, set_cookie_string);
     if (range.begin() != range.end())
     {
-      BOOST_LOG(2, "asio_http_client::extract_cookie_from_header: headers specify cookie(s)");
-      BOOST_LOG(2, "asio_http_client::extract_cookie_from_header: cookies: " << line);
+      LOGLITE_LOG_(LOGLITE_LEVEL_2, "asio_http_client::extract_cookie_from_header: headers specify cookie(s)");
+      LOGLITE_LOG_(LOGLITE_LEVEL_2, "asio_http_client::extract_cookie_from_header: cookies: " << line);
       std::vector<std::string> cookies;
-      boost::split(cookies, line.substr(set_cookie_string.size(), line.size() - set_cookie_string.size() - 1), boost::is_any_of(";"), boost::token_compress_on);
+      std::string s = line.substr(set_cookie_string.size(), line.size() - set_cookie_string.size() - 1);
+      boost::split(cookies, s, boost::is_any_of(";"), boost::token_compress_on);
       for (unsigned int i = 0; i < cookies.size();  ++i)
       {
         std::size_t equal_pos;
         if ((equal_pos = cookies[i].find_first_of("=")) == std::string::npos)
         {
-          BOOST_LOG(1, "asio_http_client::extract_cookie_from_header: not a cookie: " << cookies[i]);
+          LOGLITE_LOG_(LOGLITE_LEVEL_1, "asio_http_client::extract_cookie_from_header: not a cookie: " << cookies[i]);
           continue;
         }
 
-        BOOST_LOG(3, "asio_http_client::extract_cookie_from_header: cookie : " << cookies[i] << " equal_pos = " << equal_pos);
+        LOGLITE_LOG_(LOGLITE_LEVEL_3, "asio_http_client::extract_cookie_from_header: cookie : " << cookies[i] << " equal_pos = " << equal_pos);
         std::string name = cookies[i].substr(0, equal_pos);
         std::string value = cookies[i].substr(equal_pos + 1);
         conf->add_cookie(server, name, value);
@@ -235,4 +230,25 @@ int asio_http_client::extract_cookie_from_header(const std::string &server)
   }
 
   return 0;
+}
+
+/**
+ * http_client implementation
+ */
+
+void http_client::retrieve(http_response_t &response)
+{
+  LOGLITE_LOG_(LOGLITE_LEVEL_1, "http_client::retrieve enter");
+  boost::asio::io_service io_service;
+  address_extractor ae(m_address);
+  LOGLITE_LOG_(LOGLITE_LEVEL_2, "http_client::retrieve: server == " << ae.m_server << " address: " << ae.m_address);
+  asio_http_client c(io_service, ae.m_server, ae.m_address);
+  io_service.run();
+  
+  response.m_status_code = c.m_status_code;
+  LOGLITE_LOG_(LOGLITE_LEVEL_2, "http_client::retrieve: status code: " << response.m_status_code);
+  response.m_header = c.m_header_stream.str();
+  LOGLITE_LOG_(LOGLITE_LEVEL_3, "http_client::retrieve: header: " << response.m_header);
+  response.m_content = c.m_output_stream.str();
+  LOGLITE_LOG_(LOGLITE_LEVEL_1, "http_client::retrieve exit");
 }

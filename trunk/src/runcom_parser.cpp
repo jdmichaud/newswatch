@@ -8,12 +8,11 @@ int runcom_parser::parse()
 {
   try
   {
-    BOOST_LOG(1, "reading config file " << m_conf_filename);
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "reading config file " << m_conf_filename);
     std::ifstream config_file(m_conf_filename.c_str());
     if (!config_file.is_open())
     {
-      std::cerr << "unable to open " << m_conf_filename << std::endl;
-      BOOST_LOG(1, "file " << m_conf_filename << " could not be open");
+      LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "could not open file: " << m_conf_filename);
       return 1;
     }
 
@@ -34,7 +33,7 @@ int runcom_parser::parse()
         continue;
       std::string value = line.substr(first_quote_pos + 1, last_quote_pos - first_quote_pos - 1);
 
-      BOOST_LOG(1, item << " : \"" << value << "\"");
+      LOGLITE_LOG_(LOGLITE_LEVEL_1, item << " : \"" << value << "\"");
 
       if (item == "feeds")
         m_configuration->m_feed_filename = value;
@@ -48,20 +47,18 @@ int runcom_parser::parse()
         m_configuration->m_cookies_filename = value;
       else
       {
-        BOOST_LOG(1, "Warning: " << item << " unknown config item");
+        LOGLITE_LOG_(LOGLITE_LEVEL_1, "Warning: " << item << " unknown config item");
         m_configuration->m_unknown_config[item] = value;
       }
     }
   }
   catch (const std::exception& e)
   {
-    BOOST_LOG(1, "Error: " << e.what());
-    std::cerr << "Error: " << e.what() << std::endl;
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Error: " << e.what());
   }
   catch (...)
   {
-    BOOST_LOG(1, "Unknwon exception");
-    std::cerr << "Unknwon exception" << std::endl; 
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Unknwon exception");
   }
 
   return 0;
@@ -71,12 +68,11 @@ int runcom_parser::parse_feeds(const std::string &feed_filename)
 {
   try
   {
-    BOOST_LOG(1, "reading feeds file " << feed_filename);
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "reading feeds file " << feed_filename);
     std::ifstream feed_file(feed_filename.c_str());
     if (!feed_file.is_open())
     {
-      std::cerr << "unable to open " << feed_filename << std::endl;
-      BOOST_LOG(1, "file " << feed_filename << " could not be open");
+      LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "could not open file: " << feed_filename);
       return 1;
     }
 
@@ -95,19 +91,16 @@ int runcom_parser::parse_feeds(const std::string &feed_filename)
       //  End grammar
       space_p).full)
     {
-      std::cerr << "parse error: " << feed_filename << std::endl;
-      BOOST_LOG(1, "parse error: " << feed_filename);
+      LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "parse error: " << feed_filename);
     }
   }
   catch (const std::exception& e)
   {
-    BOOST_LOG(1, "Error: " << e.what());
-    std::cerr << "Error: " << e.what() << std::endl;
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Error: " << e.what());
   }
   catch (...)
   {
-    BOOST_LOG(1, "Unknwon exception");
-    std::cerr << "Unknwon exception" << std::endl; 
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "Unknwon exception");
   }
 
   return 0;
@@ -116,11 +109,11 @@ int runcom_parser::parse_feeds(const std::string &feed_filename)
 
 int runcom_parser::parse_cookies(const std::string &cookies_filename)
 {
-  BOOST_LOG(1, "runcom_parser::parse_cookies_file: Parsing " << cookies_filename << " for cookies");
+  LOGLITE_LOG_(LOGLITE_LEVEL_1, "runcom_parser::parse_cookies_file: Parsing " << cookies_filename << " for cookies");
   std::ifstream cookies_file(cookies_filename.c_str());
   if (!cookies_file.is_open())
   {
-    BOOST_LOG(1, "runcom_parser::parse_cookies_file: ERROR: " << cookies_filename << " could not be opened");
+    LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::error, "runcom_parser::parse_cookies_file: ERROR: " << cookies_filename << " could not be opened");
     return 1;
   }
 
@@ -129,7 +122,7 @@ int runcom_parser::parse_cookies(const std::string &cookies_filename)
   while (std::getline(cookies_file, line))
   {
     ++line_number;
-    BOOST_LOG(3, "runcom_parser::parse_cookies_file: " << line);
+    LOGLITE_LOG_(LOGLITE_LEVEL_3, "runcom_parser::parse_cookies_file: " << line);
     std::size_t pos = 0;
     if ((((pos = line.find_first_not_of(" ")) != std::string::npos) && (line[pos] == '#'))
         || line.empty())
@@ -139,7 +132,7 @@ int runcom_parser::parse_cookies(const std::string &cookies_filename)
     boost::smatch what;
     if (!boost::regex_match(line, what, re))
     {
-      BOOST_LOG(1, "runcom_parser::parse_cookies_file: invalid line: " << line);
+      LOGLITE_LOG(LOGLITE_LEVEL_1, loglite::warning, "runcom_parser::parse_cookies_file: invalid line: " << line);
       continue;
     }
 
@@ -149,6 +142,6 @@ int runcom_parser::parse_cookies(const std::string &cookies_filename)
     configuration::get_instance()->add_cookie(website, name, value);
   }
 
-  BOOST_LOG(1, "runcom_parser::parse_cookies_file: " << line_number << " lines in cookies file");
+  LOGLITE_LOG_(LOGLITE_LEVEL_1, "runcom_parser::parse_cookies_file: " << line_number << " lines in cookies file");
   return 0;
 }

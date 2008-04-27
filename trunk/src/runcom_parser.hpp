@@ -26,7 +26,7 @@ public:
   void begin_section(const char *first, const char *last)
   {
     std::string section(first, last);
-    BOOST_LOG(2, "section: >" << section << "<");
+    LOGLITE_LOG_(LOGLITE_LEVEL_2, "section: >" << section << "<");
     media_s media(section);
     m_configuration->m_medias.push_back(media);
   }
@@ -34,7 +34,7 @@ public:
   void set_current_rss_name(const char *first, const char *last)
   {
     std::string feed_name(first, last);
-    BOOST_LOG(2, "feed_name: >" << feed_name << "<");
+    LOGLITE_LOG_(LOGLITE_LEVEL_2, "feed_name: >" << feed_name << "<");
     feed_s feed(feed_name);
     m_configuration->m_medias[m_configuration->m_medias.size() - 1].m_feeds.push_back(feed);
   }
@@ -42,7 +42,7 @@ public:
   void add_rss_to_section(const char *first, const char *last)
   {
     std::string address(first, last);
-    BOOST_LOG(2, "address: >" << address << "<");
+    LOGLITE_LOG_(LOGLITE_LEVEL_2, "address: >" << address << "<");
     media_s *media = &m_configuration->m_medias[m_configuration->m_medias.size() - 1];
     media->m_feeds[media->m_feeds.size() - 1].m_feed_address = address;
   }
