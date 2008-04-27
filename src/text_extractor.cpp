@@ -25,5 +25,5 @@ void text_extractor::new_article(text_extractor_new_article_handler_t *handler)
 
   unsigned int uid = handler->m_uids.back();
   handler->m_uids.pop_back();
-  BOOST_LOG(1, "text_extractor::new_article: article uid: " << uid);
+  LOGLITE_LOG_(LOGLITE_LEVEL_1, "text_extractor::new_article: article uid: " << uid);
 }

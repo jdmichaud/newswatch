@@ -83,7 +83,7 @@ public:
     boost::regex address_regex("(?:http://)?([^/]*)(/.*)");
     if (!boost::regex_match(address, what, address_regex))
     {
-      std::exception e((std::string("invalid address: ") + address).c_str());
+      std::string e((std::string("invalid address: ") + address).c_str());
       throw e;
     }
 
@@ -107,22 +107,7 @@ public:
 
   }
 
-  void retrieve(http_response_t &response)
-  {
-    BOOST_LOG(1, "http_client::retrieve enter");
-    boost::asio::io_service io_service;
-    address_extractor ae(m_address);
-    BOOST_LOG(2, "http_client::retrieve: server == " << ae.m_server << " address: " << ae.m_address);
-    asio_http_client c(io_service, ae.m_server, ae.m_address);
-    io_service.run();
-    
-    response.m_status_code = c.m_status_code;
-    BOOST_LOG(2, "http_client::retrieve: status code: " << response.m_status_code);
-    response.m_header = c.m_header_stream.str();
-    BOOST_LOG(3, "http_client::retrieve: header: " << response.m_header);
-    response.m_content = c.m_output_stream.str();
-    BOOST_LOG(1, "http_client::retrieve exit");
-  }
+  void retrieve(http_response_t &response);
 
   std::string m_address;
 };

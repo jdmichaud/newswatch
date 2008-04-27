@@ -19,13 +19,13 @@ public:
   {
     std::vector<std::string> newspapers;
     db_access::get_instance()->get_newspapers(newspapers);
-    BOOST_LOG(1, "word_counter::count: found " << newspapers.size() << " newspaper in database");
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "word_counter::count: found " << newspapers.size() << " newspaper in database");
 
     unsigned long word_count = 0;
     unsigned int i = 0;
     for (; i < newspapers.size(); ++i)
     {
-      BOOST_LOG(1, "word_counter::count: counting for " << newspapers[i] << " ...");
+      LOGLITE_LOG_(LOGLITE_LEVEL_1, "word_counter::count: counting for " << newspapers[i] << " ...");
       word_count += count_in_newspaper(newspapers[i]);
     }
 
@@ -36,7 +36,7 @@ public:
   {
     std::vector<unsigned long int> uids;
     db_access::get_instance()->get_articles(newspaper_name, uids);
-    BOOST_LOG(1, "word_counter::count: found " << uids.size() << " articles for " << newspaper_name);
+    LOGLITE_LOG_(LOGLITE_LEVEL_1, "word_counter::count: found " << uids.size() << " articles for " << newspaper_name);
 
     unsigned long word_count = 0;
     unsigned int i = 0;
